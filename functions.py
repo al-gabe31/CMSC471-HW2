@@ -19,8 +19,8 @@ class waterState:
         self.prevState = prevState
     
     @staticmethod
-    def get_heuristic(self):
-        return abs(self.x - 1) + abs(self.y - 1)
+    def get_heuristic(otherState):
+        return abs(otherState.x - 1) + abs(otherState.y - 1)
     
     # The following 4 methods returns the resulting state based on a given action
     # Pours out the 3 gallon jug to the floor (emptying it)
