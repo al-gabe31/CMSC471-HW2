@@ -41,7 +41,7 @@ class waterState:
     # Performs all 4 possible actions
     # Returns a tuple
     def perform_all(self):
-        return (waterState.pour_out_x(self), waterState.pour_out_y(self), waterState.pour_x_to_y(self), waterState.pour_y_to_x(self))
+        return (self.pour_out_x(), self.pour_out_y(), self.pour_x_to_y(), self.pour_y_to_x())
     
     # Returns True if the current state matches the goal state
     def is_goal_state(self):
@@ -61,4 +61,25 @@ class waterState:
 class WaterPouringSolution:
     @staticmethod
     def breadth_first():
-        pass
+        visited = []
+        frontier = deque() # Will be a Queue data structure
+
+        frontier.append(waterState(3, 1))
+        curr_state = frontier[0]
+
+        # Keeps finding a solution until:
+        #   - Frontier is empty (solution isn't possible)
+        #   - Goal state found (heuristic value = 0)
+        while len(frontier) > 0 and curr_state.get_heuristic() != 0:
+            # Adds current state to the visited list (if it hasn't been visited yet)
+            if curr_state not in visited:
+                visited.append(curr_state)
+            
+            # Adds new states to the frontier based on all possible actions
+            for state in curr_state.perform_all():
+                frontier.append(state)
+            
+            # Gets state from the left of the Queue
+            curr_state = frontier.popleft()
+        
+        return curr_state
