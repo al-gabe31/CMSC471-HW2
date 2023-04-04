@@ -1,14 +1,17 @@
 from collections import deque # Needed for Stacks and Queues
 from queue import PriorityQueue # Needed for Priority Queue
 
-X_CAPACITY = 3 # Capacity of the first water jug
+X_CAPACITY = 3  # Capacity of the first water jug
 Y_CAPACITY = 1 # Capacity of the second water jug
 
-X_START = 2
-Y_START = 1
+X_START = 3     # Start value of the first jug
+Y_START = 1     # Start value of the second jug
+
+X_GOAL = 1      # End value of the first jug
+Y_GOAL = 1      # End value of the second jug
 
 class waterState:
-    def __init__(self, x = X_CAPACITY, y = Y_CAPACITY, prevState = None):
+    def __init__(self, x = X_CAPACITY, y = Y_CAPACITY, prevState = None, path_cost = 0):
         # Validates constructor inputs
         # x in [0, 3] and y in [0, 1]
         if x in range(0, X_CAPACITY + 1) and y in range(0, Y_CAPACITY + 1):
@@ -20,28 +23,29 @@ class waterState:
             self.y = Y_CAPACITY
         
         self.prevState = prevState
+        self.path_cost = path_cost
     
     def get_heuristic(otherState):
-        return abs(otherState.x - 1) + abs(otherState.y - 1)
+        return abs(otherState.x - X_GOAL) + abs(otherState.y - Y_GOAL)
     
     # The following 4 methods returns the resulting state based on a given action
     # Pours out the 3 gallon jug to the floor (emptying it)
     def pour_out_x(self):
-        return waterState(0, self.y, self)
+        return waterState(0, self.y, self, self.path_cost + 1)
     
     # Pours out the 1 gallon jug to the floor (emptying it)
     def pour_out_y(self):
-        return waterState(self.x, 0, self)
+        return waterState(self.x, 0, self, self.path_cost + 1)
     
     # Pours the 3 gallon jug to the 1 gallon jug
     def pour_x_to_y(self):
         num_poured = min(self.x, Y_CAPACITY - self.y)
-        return waterState(self.x - num_poured, min(Y_CAPACITY, self.x + self.y), self)
+        return waterState(self.x - num_poured, min(Y_CAPACITY, self.x + self.y), self, self.path_cost + 1)
     
     # Pours the 1 gallon jug to the 3 gallon jug
     def pour_y_to_x(self):
         num_poured = min(X_CAPACITY - self.x, self.y)
-        return waterState(min(X_CAPACITY, self.x + self.y), self.y - num_poured, self)
+        return waterState(min(X_CAPACITY, self.x + self.y), self.y - num_poured, self, self.path_cost + 1)
     
     # Performs all 4 possible actions
     # Returns a tuple
@@ -105,13 +109,19 @@ class WaterPouringSolution:
 
             iters += 1
 
-        # Obtain the solution path
-        solution_path = [curr_state]
-        while(solution_path[-1].prevState):
-            solution_path.append(solution_path[-1].prevState)
-        solution_path.reverse()
-        
-        return (solution_path, iters)
+        # Case 1: Solution Found
+        if curr_state.get_heuristic() == 0:
+            # Obtain the solution path
+            solution_path = [curr_state]
+            while(solution_path[-1].prevState):
+                solution_path.append(solution_path[-1].prevState)
+            solution_path.reverse()
+            
+            return (solution_path, iters)
+        # Case 2: Solution Not Found
+        else:
+            print("SOLUTION NOT FOUND")
+            return -1 # Return error code
     
     # Performs a depth-first solution on the problem
     # Returns a tuple where index:
@@ -150,13 +160,19 @@ class WaterPouringSolution:
 
             iters += 1
 
-        # Obtain the solution path
-        solution_path = [curr_state]
-        while(solution_path[-1].prevState):
-            solution_path.append(solution_path[-1].prevState)
-        solution_path.reverse()
-        
-        return (solution_path, iters)
+        # Case 1: Solution Found
+        if curr_state.get_heuristic() == 0:
+            # Obtain the solution path
+            solution_path = [curr_state]
+            while(solution_path[-1].prevState):
+                solution_path.append(solution_path[-1].prevState)
+            solution_path.reverse()
+            
+            return (solution_path, iters)
+        # Case 2: Solution Not Found
+        else:
+            print("SOLUTION NOT FOUND")
+            return -1 # Return error code
     
     # Performs a greedy best-first search using h
     # Returns a tuple where index:
@@ -195,10 +211,16 @@ class WaterPouringSolution:
 
             iters += 1
 
-        # Obtain the solution path
-        solution_path = [curr_state]
-        while(solution_path[-1].prevState):
-            solution_path.append(solution_path[-1].prevState)
-        solution_path.reverse()
-        
-        return (solution_path, iters)
+        # Case 1: Solution Found
+        if curr_state.get_heuristic() == 0:
+            # Obtain the solution path
+            solution_path = [curr_state]
+            while(solution_path[-1].prevState):
+                solution_path.append(solution_path[-1].prevState)
+            solution_path.reverse()
+            
+            return (solution_path, iters)
+        # Case 2: Solution Not Found
+        else:
+            print("SOLUTION NOT FOUND")
+            return -1 # Return error code
