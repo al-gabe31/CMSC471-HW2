@@ -51,9 +51,6 @@ class waterState:
     def __str__(self):
         return f"X = {self.x} & Y = {self.y}"
     
-    def state_repr(self):
-        return f"{self.x}:{self.y}"
-    
     # Makes waterState objects comparable to each other using the getHeuristic method
     def __lt__(self, otherState):
         return waterState.get_heuristic(self) < waterState.get_heuristic(otherState)
@@ -63,5 +60,5 @@ class waterState:
 
 class WaterPouringSolution:
     @staticmethod
-    def greeting():
-        print("Hi there!")
+    def breadth_first():
+        pass
