@@ -18,45 +18,41 @@ class waterState:
         
         self.prevState = prevState
     
-    @staticmethod
     def get_heuristic(otherState):
         return abs(otherState.x - 1) + abs(otherState.y - 1)
     
     # The following 4 methods returns the resulting state based on a given action
     # Pours out the 3 gallon jug to the floor (emptying it)
-    @staticmethod
-    def pour_out_x(otherState):
-        return waterState(0, otherState.y, otherState)
+    def pour_out_x(self):
+        return waterState(0, self.y, self)
     
     # Pours out the 1 gallon jug to the floor (emptying it)
-    @staticmethod
-    def pour_out_y(otherState):
-        return waterState(otherState.x, 0, otherState)
+    def pour_out_y(self):
+        return waterState(self.x, 0, self)
     
     # Pours the 3 gallon jug to the 1 gallon jug
-    @staticmethod
-    def pour_x_to_y(otherState):
-        return waterState(0, min(Y_CAPACITY, otherState.x + otherState.y), otherState)
+    def pour_x_to_y(self):
+        return waterState(0, min(Y_CAPACITY, self.x + self.y), self)
     
     # Pours the 1 gallon jug to the 3 gallon jug
-    @staticmethod
-    def pour_y_to_x(otherState):
-        return waterState(min(X_CAPACITY, otherState.x + otherState.y), 0, otherState)
+    def pour_y_to_x(self):
+        return waterState(min(X_CAPACITY, self.x + self.y), 0, self)
     
     # Performs all 4 possible actions
     # Returns a tuple
-    @staticmethod
-    def perform_all(otherState):
-        return (waterState.pour_out_x(otherState), waterState.pour_out_y(otherState), waterState.pour_x_to_y(otherState), waterState.pour_y_to_x(otherState))
+    def perform_all(self):
+        return (waterState.pour_out_x(self), waterState.pour_out_y(self), waterState.pour_x_to_y(self), waterState.pour_y_to_x(self))
     
     # Returns True if the current state matches the goal state
-    @staticmethod
-    def is_goal_state(otherState):
-        return otherState.x == 1 and otherState.y == 1
+    def is_goal_state(self):
+        return self.x == 1 and self.y == 1
     
     # To string method
     def __str__(self):
         return f"X = {self.x} & Y = {self.y}"
+    
+    def state_repr(self):
+        return f"{self.x}:{self.y}"
     
     # Makes waterState objects comparable to each other using the getHeuristic method
     def __lt__(self, otherState):
