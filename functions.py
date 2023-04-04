@@ -51,7 +51,7 @@ class waterState:
     
     # To string method
     def __str__(self):
-        return f"X = {self.x} & Y = {self.y}"
+        return f"[{self.x}, {self.y}]"
     
     # String representation of the state
     def string_repr(self):
@@ -101,5 +101,11 @@ class WaterPouringSolution:
             curr_state = frontier.popleft()
 
             iters += 1
+
+        # Obtain the solution path
+        solution_path = [curr_state]
+        while(solution_path[-1].prevState):
+            solution_path.append(solution_path[-1].prevState)
+        solution_path.reverse()
         
-        return (curr_state, iters)
+        return (solution_path, iters)
