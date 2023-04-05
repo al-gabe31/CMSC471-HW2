@@ -10,8 +10,9 @@ Y_START = 1     # Start value of the second jug
 X_GOAL = 1      # End value of the first jug
 Y_GOAL = 1      # End value of the second jug
 
+# Code for Question 3
 class waterState:
-    def __init__(self, x = X_CAPACITY, y = Y_CAPACITY, prevState = None, path_cost = 0):
+    def __init__(self, x = X_CAPACITY, y = Y_CAPACITY, prev_state = None, path_cost = 0):
         # Validates constructor inputs
         # x in [0, 3] and y in [0, 1]
         if x in range(0, X_CAPACITY + 1) and y in range(0, Y_CAPACITY + 1):
@@ -22,7 +23,7 @@ class waterState:
             self.x = X_CAPACITY
             self.y = Y_CAPACITY
         
-        self.prevState = prevState
+        self.prev_state = prev_state
         self.path_cost = path_cost
     
     def get_heuristic(otherState):
@@ -120,8 +121,8 @@ class WaterPouringSolution:
         if curr_state.get_heuristic() == 0:
             # Obtain the solution path
             solution_path = [curr_state]
-            while(solution_path[-1].prevState):
-                solution_path.append(solution_path[-1].prevState)
+            while(solution_path[-1].prev_state):
+                solution_path.append(solution_path[-1].prev_state)
             solution_path.reverse()
             
             return (solution_path, iters)
@@ -171,8 +172,8 @@ class WaterPouringSolution:
         if curr_state.get_heuristic() == 0:
             # Obtain the solution path
             solution_path = [curr_state]
-            while(solution_path[-1].prevState):
-                solution_path.append(solution_path[-1].prevState)
+            while(solution_path[-1].prev_state):
+                solution_path.append(solution_path[-1].prev_state)
             solution_path.reverse()
             
             return (solution_path, iters)
@@ -222,8 +223,8 @@ class WaterPouringSolution:
         if curr_state.get_heuristic() == 0:
             # Obtain the solution path
             solution_path = [curr_state]
-            while(solution_path[-1].prevState):
-                solution_path.append(solution_path[-1].prevState)
+            while(solution_path[-1].prev_state):
+                solution_path.append(solution_path[-1].prev_state)
             solution_path.reverse()
             
             return (solution_path, iters)
@@ -274,8 +275,8 @@ class WaterPouringSolution:
         if curr_state.get_heuristic() == 0:
             # Obtain the solution path
             solution_path = [curr_state]
-            while(solution_path[-1].prevState):
-                solution_path.append(solution_path[-1].prevState)
+            while(solution_path[-1].prev_state):
+                solution_path.append(solution_path[-1].prev_state)
             solution_path.reverse()
             
             return (solution_path, iters)
@@ -283,3 +284,9 @@ class WaterPouringSolution:
         else:
             print("SOLUTION NOT FOUND")
             return -1 # Return error code
+
+# Code for Question 4
+# RESUME
+class eightPuzzleState:
+    def __init__(self, grid, prev_state = None, path_cost = 0):
+        pass
