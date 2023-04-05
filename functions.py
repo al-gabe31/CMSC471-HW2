@@ -72,12 +72,12 @@ class waterState:
     def string_repr(self):
         return f"{self.x}:{self.y}"
     
-    # Makes waterState objects comparable to each other using the getHeuristic method
-    def __lt__(self, otherState):
-        return waterState.get_heuristic(self) < waterState.get_heuristic(otherState)
+    # Makes waterState objects comparable to each other using the get_heuristics method
+    def __lt__(self, other_state):
+        return waterState.get_heuristic(self) < waterState.get_heuristic(other_state)
     
-    def __eq__(self, otherState):
-        return waterState.get_heuristic(self) == waterState.get_heuristic(otherState)
+    def __eq__(self, other_state):
+        return waterState.get_heuristic(self) == waterState.get_heuristic(other_state)
 
 class WaterPouringSolution:
     # Performs a breadth-first solution on the problem
@@ -286,7 +286,124 @@ class WaterPouringSolution:
             return -1 # Return error code
 
 # Code for Question 4
-# RESUME
+# Note: The grid attribute of the state is represented as a 1D array (as opposed to 2D). I thought it'd be easier to work with 1D arrays. I just have to keep in mind that grids are actually 2D.
+# Note: Also, the empty spot on the grid is represented by a 0.
 class eightPuzzleState:
     def __init__(self, grid, prev_state = None, path_cost = 0):
-        pass
+        self.grid = grid
+        self.prev_state = prev_state
+        self.path_cost = path_cost
+    
+    def get_heuristic1(self):
+        goal = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+        num_misplaced = 0
+
+        for i in range(len(goal)):
+            if self.grid[i] != goal[i]:
+                num_misplaced += 1
+        
+        return num_misplaced
+    
+    # HELPER FUNCTION
+    # Swaps 2 values in the grid
+    def grid_swapping(self, index1, index2):
+        # Validates inputs
+        if index1 not in range(0, len(self.grid)) or index2 not in range(0, len(self.grid)):
+            print("INVALID INPUTS")
+            return -1 # Return Error Code
+
+        temp = self.grid[index1]
+        self.grid[index1] = self.grid[index2]
+        self.grid[index2] = temp
+        print("FINISHED SWAPPING")
+    
+    # The following 4 methods returns the resulting state based on a given action
+    # Slides a tile down to the empty spot
+    def slide_down(self):
+        # Case 1: Invalid Case (empty spot at top row)
+        if self.grid.index(0) in range(0, 3):
+            return -1 # Return Error Code
+
+        # Case 2: Valid Case
+        new_state = eightPuzzleState(self.grid, self, self.path_cost + 1)
+
+        # Swaps the empty spot with the one above
+        new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) - 3)
+        return new_state
+    
+    # Slides a tile up to the empty spot
+    def slide_up(self):
+        # Case 1: Invalid Case (empty spot at the bottom row)
+        if self.grid.index(0) in range(6, 9):
+            return -1 # Return Error Code
+        
+        # Case 2: Valid Case
+        new_state = eightPuzzleState(self.grid, self, self.path_cost + 1)
+
+        # Swaps the empty spot with the one below
+        new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) + 3)
+        return new_state
+    
+    # Slides a tile to the left where the empty spot is
+    def slide_left(self):
+        # Case 1: Invalid Case (empty spot at the very right column)
+        if self.grid.index(0) in [2, 5, 8]:
+            return -1 # Return Error Code
+        
+        # Case 2: Valid Case
+        new_state = eightPuzzleState(self.grid, self, self.path_cost + 1)
+
+        # Swaps the empty spot with the one to the right
+        new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) + 1)
+        return new_state
+    
+    # Slides a tile to the right where the empty spot is
+    def slide_right(self):
+        # Case 1: Invalid Case (empty spot a tthe very left column)
+        if self.grid.index(0) in [0, 3, 6]:
+            return -1 # Return Error Code
+        
+        # Case Valid Case
+        new_state = eightPuzzleState(self.grid, self, self.path_cost + 1)
+
+        # Swaps the empty spot with the one to the left
+        new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) - 1)
+        return new_state
+    
+    # Performs all 4 possible actions
+    # Returns a tuple
+    def perform_all(self):
+        states = []
+        
+        curr_state = self.slide_down()
+        if curr_state != -1:
+            states.append(curr_state)
+
+        curr_state = self.slide_up()
+        if curr_state != -1:
+            states.append(curr_state)
+        
+        curr_state = self.slide_left()
+        if curr_state != -1:
+            states.append(curr_state)
+        
+        curr_state = self.slide_down()
+        if curr_state != -1:
+            states.append(curr_state)
+        
+        return tuple(states)
+    
+    # To string method
+    def __str__(self):
+        return f"{self.grid[0]} {self.grid[1]} {self.grid[2]}\n{self.grid[3]} {self.grid[4]} {self.grid[5]}\n{self.grid[6]} {self.grid[7]} {self.grid[8]}"
+    
+    # String representation of the state
+    def string_repr(self):
+        return f"{self.grid[0]}:{self.grid[1]}:{self.grid[2]}:{self.grid[3]}:{self.grid[4]}:{self.grid[5]}:{self.grid[6]}:{self.grid[7]}:{self.grid[8]}"
+    
+    # Makes eightPuzzleState objects comparable to each other using the get_heuristics method
+    def __lt__(self, other_state):
+        return self.get_heuristic1() < other_state.get_heuristic1()
+    
+    def __eq__(self, other_state):
+        return self.get_heuristic1() == other_state.get_heuristic1()
