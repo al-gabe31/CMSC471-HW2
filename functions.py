@@ -213,7 +213,7 @@ class WaterPouringSolution:
                 
                 # frontier.append(state)
             
-            # Gets state from the left of the Queue
+            # Gets state from the Priority Queue
             curr_state = frontier.get()
 
             iters += 1
@@ -232,7 +232,7 @@ class WaterPouringSolution:
             print("SOLUTION NOT FOUND")
             return -1 # Return error code
     
-    # Performs an A/A* search using h
+    # Performs a greedy best-first search using h
     # Returns a tuple where index:
     #   - 0: End state
     #   - 1: Cost of solution
@@ -242,12 +242,8 @@ class WaterPouringSolution:
         visited = []
         frontier = PriorityQueue() # Will be a Priority Queue data structure
 
-        # This time, each entry in the frontier Priority Queue will be a tuple where index:
-        #   - 0: Path Cost + Heuristic
-        #   - 1: state
-        start_state = waterState(X_START, Y_START)
-        frontier.append((start_state.path_cost + start_state.get_heuristic(), start_state))
-        curr_state = frontier[0]
+        curr_state = waterState(X_START, Y_START)
+        frontier.put((curr_state.get_heuristic() + curr_state.path_cost, curr_state))
 
         iters = 0 # Will also act as the cost
         max_iters = 1000
@@ -255,7 +251,10 @@ class WaterPouringSolution:
         # Keeps finding a solution until:
         #   - Frontier is empty (solution isn't possible)
         #   - Goal state found (heuristic value = 0)
-        while frontier.qsize > 0 and curr_state.get_heuristic() != 0 and iters < max_iters:
+        while frontier.qsize() > 0 and curr_state.get_heuristic() != 0 and iters < max_iters:
+            # Gets state from the Priority Queue
+            curr_state = (frontier.get()[1])
+            
             # Adds current state to the visited list (if it hasn't been visited yet)
             if curr_state.string_repr() not in visited_string:
                 visited_string.append(curr_state.string_repr())
@@ -264,13 +263,11 @@ class WaterPouringSolution:
             # Adds new states to the frontier based on all possible actions
             for state in curr_state.perform_all():
                 if state.string_repr() not in visited_string:
-                    frontier.put(state)
+                    # frontier.put(state)
+                    frontier.put((state.get_heuristic() + state.path_cost, state))
                 
                 # frontier.append(state)
             
-            # Gets state from the left of the Queue
-            curr_state = frontier.get()
-
             iters += 1
 
         # Case 1: Solution Found
