@@ -289,8 +289,13 @@ class WaterPouringSolution:
 # Note: The grid attribute of the state is represented as a 1D array (as opposed to 2D). I thought it'd be easier to work with 1D arrays. I just have to keep in mind that grids are actually 2D.
 # Note: Also, the empty spot on the grid is represented by a 0.
 class eightPuzzleState:
-    def __init__(self, grid, prev_state = None, path_cost = 0):
-        self.grid = grid
+    def __init__(self, grid = [1, 2, 3, 4, 8, 0, 7, 6, 5], prev_state = None, path_cost = 0):
+        # Validates constructor inputs
+        if len(grid) == 9 and 0 in grid and 1 in grid and 2 in grid and 3 in grid and 4 in grid and 5 in grid and 6 in grid and 7 in grid and 8 in grid:
+            self.grid = grid
+        else:
+            self.grid = [1, 2, 3, 4, 8, 0, 7, 6, 5]
+        
         self.prev_state = prev_state
         self.path_cost = path_cost
     
@@ -315,7 +320,6 @@ class eightPuzzleState:
         temp = self.grid[index1]
         self.grid[index1] = self.grid[index2]
         self.grid[index2] = temp
-        print("FINISHED SWAPPING")
     
     # The following 4 methods returns the resulting state based on a given action
     # Slides a tile down to the empty spot
@@ -325,7 +329,7 @@ class eightPuzzleState:
             return -1 # Return Error Code
 
         # Case 2: Valid Case
-        new_state = eightPuzzleState(self.grid, self, self.path_cost + 1)
+        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1)
 
         # Swaps the empty spot with the one above
         new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) - 3)
@@ -338,7 +342,7 @@ class eightPuzzleState:
             return -1 # Return Error Code
         
         # Case 2: Valid Case
-        new_state = eightPuzzleState(self.grid, self, self.path_cost + 1)
+        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1)
 
         # Swaps the empty spot with the one below
         new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) + 3)
@@ -351,7 +355,7 @@ class eightPuzzleState:
             return -1 # Return Error Code
         
         # Case 2: Valid Case
-        new_state = eightPuzzleState(self.grid, self, self.path_cost + 1)
+        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1)
 
         # Swaps the empty spot with the one to the right
         new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) + 1)
@@ -364,7 +368,7 @@ class eightPuzzleState:
             return -1 # Return Error Code
         
         # Case Valid Case
-        new_state = eightPuzzleState(self.grid, self, self.path_cost + 1)
+        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1)
 
         # Swaps the empty spot with the one to the left
         new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) - 1)
@@ -376,26 +380,26 @@ class eightPuzzleState:
         states = []
         
         curr_state = self.slide_down()
-        if curr_state != -1:
+        if type(curr_state) is eightPuzzleState:
             states.append(curr_state)
 
         curr_state = self.slide_up()
-        if curr_state != -1:
+        if type(curr_state) is eightPuzzleState:
             states.append(curr_state)
         
         curr_state = self.slide_left()
-        if curr_state != -1:
+        if type(curr_state) is eightPuzzleState:
             states.append(curr_state)
         
-        curr_state = self.slide_down()
-        if curr_state != -1:
+        curr_state = self.slide_right()
+        if type(curr_state) is eightPuzzleState:
             states.append(curr_state)
         
         return tuple(states)
     
     # To string method
     def __str__(self):
-        return f"{self.grid[0]} {self.grid[1]} {self.grid[2]}\n{self.grid[3]} {self.grid[4]} {self.grid[5]}\n{self.grid[6]} {self.grid[7]} {self.grid[8]}"
+        return f"+-----+\n|{self.grid[0]} {self.grid[1]} {self.grid[2]}|\n|{self.grid[3]} {self.grid[4]} {self.grid[5]}|\n|{self.grid[6]} {self.grid[7]} {self.grid[8]}|\n+-----+"
     
     # String representation of the state
     def string_repr(self):
