@@ -139,7 +139,7 @@ class WaterPouringSolution:
     def depth_first():
         visited_string = []
         visited = []
-        frontier = deque() # Will be a Queue data structure
+        frontier = deque() # Will be a Stack data structure
 
         frontier.append(waterState(X_START, Y_START))
         curr_state = frontier[0]
@@ -163,7 +163,7 @@ class WaterPouringSolution:
                 
                 # frontier.append(state)
             
-            # Gets state from the left of the Queue
+            # Gets state from the right of the Stack
             curr_state = frontier.pop()
 
             iters += 1
@@ -286,7 +286,7 @@ class WaterPouringSolution:
             return -1 # Return error code
 
 # Code for Question 4
-START_STATE = [7, 4, 3, 1, 0, 8, 6, 2, 5]
+START_STATE = [2, 4, 3, 1, 5, 6, 0, 7, 8]
 GOAL_STATE = [1, 2, 3, 4, 5, 6, 7, 8, 0]
 MAX_ITERS = 100000
 
@@ -449,6 +449,55 @@ class eightPuzzleSolution:
             
             # Gets state from the left of the Queue
             curr_state = frontier.popleft()
+
+            iters += 1
+        
+        # Case 1: Solution Found
+        if curr_state.get_heuristic1() == 0:
+            # Obtain the solution path
+            solution_path = [curr_state]
+            while(solution_path[-1].prev_state):
+                solution_path.append(solution_path[-1].prev_state)
+            solution_path.reverse()
+
+            return (solution_path, iters)
+        # Case 2: Solutions Not Found
+        else:
+            print("SOLUTION NOT FOUND")
+            return -1 # Return error code
+    
+    # Performs a depth-first solution on the problem
+    # Returns a tuple where index:
+    #   - 0: End state
+    #   - 1: Cost of solution
+    @staticmethod
+    def depth_first():
+        visited_string = []
+        visited = []
+        frontier = deque() # Will be a Stack data structure
+
+        frontier.append(eightPuzzleState())
+        curr_state = frontier[0]
+
+        iters = 0 # Will also act as the cost
+        max_iters = MAX_ITERS
+
+        # Keeps finding a solution until:
+        #   - Frontier is empty (solutions isn't possible)
+        #   - Goal state found (heuristic value = 0)
+        while len(frontier) > 0 and curr_state.get_heuristic1() != 0 and iters < max_iters:
+            # Adds current state to the visited list (if it hasn't been visited yet)
+            if curr_state.string_repr() not in visited_string:
+                visited_string.append(curr_state.string_repr())
+                visited.append(curr_state)
+            
+            # Adds new states to the frontier based on all possible actions
+            for state in curr_state.perform_all():
+                if state.string_repr() not in visited_string:
+                    frontier.append(state)
+            
+            # Gets state from the right of the Stack
+            curr_state = frontier.pop()
 
             iters += 1
         
