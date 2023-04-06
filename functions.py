@@ -1,8 +1,9 @@
 from collections import deque # Needed for Stacks and Queues
 from queue import PriorityQueue # Needed for Priority Queue
 
+# Code for Question 3
 X_CAPACITY = 3  # Capacity of the first water jug
-Y_CAPACITY = 1 # Capacity of the second water jug
+Y_CAPACITY = 1  # Capacity of the second water jug
 
 X_START = 3     # Start value of the first jug
 Y_START = 1     # Start value of the second jug
@@ -10,7 +11,6 @@ Y_START = 1     # Start value of the second jug
 X_GOAL = 1      # End value of the first jug
 Y_GOAL = 1      # End value of the second jug
 
-# Code for Question 3
 class waterState:
     def __init__(self, x = X_CAPACITY, y = Y_CAPACITY, prev_state = None, path_cost = 0):
         # Validates constructor inputs
@@ -277,15 +277,28 @@ class WaterPouringSolution:
             print("SOLUTION NOT FOUND")
             return -1 # Return error code
 
-# Code for Question 4
-START_STATE = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+# Code for Question 4 (Feel free to change up to your liking)
+# START_STATE = [7, 6, 8, 0, 2, 4, 5, 3, 1] # Custom case
+# 7 6 8
+# 0 2 4
+# 5 3 1
+
+START_STATE = [1, 2, 3, 4, 8, 0, 7, 6, 5] # The one used in the HW
+# 1 2 3
+# 4 8 0
+# 7 6 5
+
 GOAL_STATE = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+# 1 2 3
+# 4 5 6
+# 7 8 0
+
 MAX_ITERS = 100000
 
 # Note: The grid attribute of the state is represented as a 1D array (as opposed to 2D). I thought it'd be easier to work with 1D arrays. I just have to keep in mind that grids are actually 2D.
 # Note: Also, the empty spot on the grid is represented by a 0.
 class eightPuzzleState:
-    def __init__(self, grid = START_STATE, prev_state = None, path_cost = 0):
+    def __init__(self, grid = START_STATE, prev_state = None, path_cost = 0, prev_action = "START"):
         # Validates constructor inputs
         if len(grid) == 9 and 0 in grid and 1 in grid and 2 in grid and 3 in grid and 4 in grid and 5 in grid and 6 in grid and 7 in grid and 8 in grid:
             self.grid = grid
@@ -294,6 +307,7 @@ class eightPuzzleState:
         
         self.prev_state = prev_state
         self.path_cost = path_cost
+        self.prev_action = prev_action
     
     def get_heuristic1(self):
         goal = GOAL_STATE
@@ -347,7 +361,7 @@ class eightPuzzleState:
             return -1 # Return Error Code
 
         # Case 2: Valid Case
-        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1)
+        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1, "SLIDE DOWN")
 
         # Swaps the empty spot with the one above
         new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) - 3)
@@ -360,7 +374,7 @@ class eightPuzzleState:
             return -1 # Return Error Code
         
         # Case 2: Valid Case
-        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1)
+        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1, "SLIDE UP")
 
         # Swaps the empty spot with the one below
         new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) + 3)
@@ -373,7 +387,7 @@ class eightPuzzleState:
             return -1 # Return Error Code
         
         # Case 2: Valid Case
-        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1)
+        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1, "SLIDE LEFT")
 
         # Swaps the empty spot with the one to the right
         new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) + 1)
@@ -386,7 +400,7 @@ class eightPuzzleState:
             return -1 # Return Error Code
         
         # Case Valid Case
-        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1)
+        new_state = eightPuzzleState(self.grid.copy(), self, self.path_cost + 1, "SLIDE RIGHT")
 
         # Swaps the empty spot with the one to the left
         new_state.grid_swapping(new_state.grid.index(0), new_state.grid.index(0) - 1)
@@ -417,7 +431,7 @@ class eightPuzzleState:
     
     # To string method
     def __str__(self):
-        return f"+-----+\n|{self.grid[0]} {self.grid[1]} {self.grid[2]}|\n|{self.grid[3]} {self.grid[4]} {self.grid[5]}|\n|{self.grid[6]} {self.grid[7]} {self.grid[8]}|\n+-----+"
+        return f"{self.prev_action}\n+-----+\n|{self.grid[0]} {self.grid[1]} {self.grid[2]}|\n|{self.grid[3]} {self.grid[4]} {self.grid[5]}|\n|{self.grid[6]} {self.grid[7]} {self.grid[8]}|\n+-----+"
     
     # String representation of the state
     def string_repr(self):
