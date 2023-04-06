@@ -286,21 +286,25 @@ class WaterPouringSolution:
             return -1 # Return error code
 
 # Code for Question 4
+START_STATE = [7, 4, 3, 1, 0, 8, 6, 2, 5]
+GOAL_STATE = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+MAX_ITERS = 100000
+
 # Note: The grid attribute of the state is represented as a 1D array (as opposed to 2D). I thought it'd be easier to work with 1D arrays. I just have to keep in mind that grids are actually 2D.
 # Note: Also, the empty spot on the grid is represented by a 0.
 class eightPuzzleState:
-    def __init__(self, grid = [1, 2, 3, 4, 8, 0, 7, 6, 5], prev_state = None, path_cost = 0):
+    def __init__(self, grid = START_STATE, prev_state = None, path_cost = 0):
         # Validates constructor inputs
         if len(grid) == 9 and 0 in grid and 1 in grid and 2 in grid and 3 in grid and 4 in grid and 5 in grid and 6 in grid and 7 in grid and 8 in grid:
             self.grid = grid
         else:
-            self.grid = [1, 2, 3, 4, 8, 0, 7, 6, 5]
+            self.grid = START_STATE
         
         self.prev_state = prev_state
         self.path_cost = path_cost
     
     def get_heuristic1(self):
-        goal = [1, 2, 3, 4, 5, 6, 7, 8, 0]
+        goal = GOAL_STATE
         num_misplaced = 0
 
         for i in range(len(goal)):
@@ -411,3 +415,53 @@ class eightPuzzleState:
     
     def __eq__(self, other_state):
         return self.get_heuristic1() == other_state.get_heuristic1()
+
+class eightPuzzleSolution:
+    # Performs a breadth-first solution on the problem
+    # Returns a tuple where index:
+    #   - 0: End state
+    #   - 1: Cost of solution
+    @staticmethod
+    def breadth_first():
+        visited_string = []
+        visited = []
+        frontier = deque() # Will be a Queue data structure
+
+        frontier.append(eightPuzzleState())
+        curr_state = frontier[0]
+
+        iters = 0 # Will also act as the cost
+        max_iters = MAX_ITERS
+
+        # Keeps finding a solution until:
+        #   - Frontier is empty (solutions isn't possible)
+        #   - Goal state found (heuristic value = 0)
+        while len(frontier) > 0 and curr_state.get_heuristic1() != 0 and iters < max_iters:
+            # Adds current state to the visited list (if it hasn't been visited yet)
+            if curr_state.string_repr() not in visited_string:
+                visited_string.append(curr_state.string_repr())
+                visited.append(curr_state)
+            
+            # Adds new states to the frontier based on all possible actions
+            for state in curr_state.perform_all():
+                if state.string_repr() not in visited_string:
+                    frontier.append(state)
+            
+            # Gets state from the left of the Queue
+            curr_state = frontier.popleft()
+
+            iters += 1
+        
+        # Case 1: Solution Found
+        if curr_state.get_heuristic1() == 0:
+            # Obtain the solution path
+            solution_path = [curr_state]
+            while(solution_path[-1].prev_state):
+                solution_path.append(solution_path[-1].prev_state)
+            solution_path.reverse()
+
+            return (solution_path, iters)
+        # Case 2: Solutions Not Found
+        else:
+            print("SOLUTION NOT FOUND")
+            return -1 # Return error code
