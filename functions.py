@@ -109,8 +109,6 @@ class WaterPouringSolution:
             for state in curr_state.perform_all():
                 if state.string_repr() not in visited_string:
                     frontier.append(state)
-                
-                # frontier.append(state)
             
             # Gets state from the left of the Queue
             curr_state = frontier.popleft()
@@ -160,8 +158,6 @@ class WaterPouringSolution:
             for state in curr_state.perform_all():
                 if state.string_repr() not in visited_string:
                     frontier.append(state)
-                
-                # frontier.append(state)
             
             # Gets state from the right of the Stack
             curr_state = frontier.pop()
@@ -211,8 +207,6 @@ class WaterPouringSolution:
             for state in curr_state.perform_all():
                 if state.string_repr() not in visited_string:
                     frontier.put(state)
-                
-                # frontier.append(state)
             
             # Gets state from the Priority Queue
             curr_state = frontier.get()
@@ -266,8 +260,6 @@ class WaterPouringSolution:
                 if state.string_repr() not in visited_string:
                     # frontier.put(state)
                     frontier.put((state.get_heuristic() + state.path_cost, state))
-                
-                # frontier.append(state)
             
             iters += 1
 
@@ -286,7 +278,7 @@ class WaterPouringSolution:
             return -1 # Return error code
 
 # Code for Question 4
-START_STATE = [1, 2, 3, 4, 8, 0, 7, 6, 5]
+START_STATE = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 GOAL_STATE = [1, 2, 3, 4, 5, 6, 7, 8, 0]
 MAX_ITERS = 100000
 
