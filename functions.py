@@ -286,7 +286,7 @@ class WaterPouringSolution:
             return -1 # Return error code
 
 # Code for Question 4
-START_STATE = [8, 6, 2, 3, 0, 5, 7, 1, 4]
+START_STATE = [8, 1, 3, 7, 4, 2, 6, 5, 0]
 GOAL_STATE = [1, 2, 3, 4, 5, 6, 7, 8, 0]
 MAX_ITERS = 100000
 
@@ -312,6 +312,28 @@ class eightPuzzleState:
                 num_misplaced += 1
         
         return num_misplaced
+    
+    def get_heuristic2(self):
+        result = 0
+        
+        for num in GOAL_STATE:
+            # Get column difference here
+            curr_index = self.grid.index(num)
+            goal_index = GOAL_STATE.index(num)
+            
+            # Get column difference here
+            curr_col_index = int(curr_index % 3)
+            goal_col_index = int(goal_index % 3)
+            col_diff = abs(curr_col_index - goal_col_index)
+
+            # Get row difference here
+            curr_row_index = int(curr_index / 3)
+            goal_row_index = int(goal_index / 3)
+            row_diff = abs(curr_row_index - goal_row_index)
+
+            result += col_diff + row_diff
+        
+        return result
     
     # HELPER FUNCTION
     # Swaps 2 values in the grid
@@ -601,6 +623,55 @@ class eightPuzzleSolution:
         
         # Case 1: Solution Found
         if curr_state.get_heuristic1() == 0:
+            # Obtain the solution path
+            solution_path = [curr_state]
+            while(solution_path[-1].prev_state):
+                solution_path.append(solution_path[-1].prev_state)
+            solution_path.reverse()
+
+            return (solution_path, iters)
+        # Case 2: Solution Not Found
+        else:
+            print("SOLUTION NOT FOUND")
+            return -1 # Return error code
+    
+    # Performs a greedy best-first search using h2
+    # Returns a tuple where index:
+    #   - 0: End state
+    #   - 1: Cost of solution
+    @staticmethod
+    def best_first2():
+        visited_string = []
+        visited = []
+        frontier = PriorityQueue() # Will be a Priority Queue data structure
+
+        curr_state = eightPuzzleState()
+        frontier.put(curr_state)
+
+        iters = 0 # Will also act as the cost
+        max_iters = MAX_ITERS
+
+        # Keeps finding a solution until:
+        #   - Frontier is empty (solution isn't possible)
+        #   - Goal state found (heuristic value = 0)
+        while frontier.qsize() > 0 and curr_state.get_heuristic2() != 0 and iters < max_iters:
+            # Adds current state to the visited list (if it hasn't been visited yet)
+            if curr_state.string_repr() not in visited_string:
+                visited_string.append(curr_state.string_repr())
+                visited.append(curr_state)
+            
+            # Adds new states to the frontier based on all possible actions
+            for state in curr_state.perform_all():
+                if state.string_repr() not in visited_string:
+                    frontier.put(state)
+            
+            # Gets state from the Priority Queue
+            curr_state = frontier.get()
+
+            iters += 1
+        
+        # Casae 1: Solution Found
+        if curr_state.get_heuristic2() == 0:
             # Obtain the solution path
             solution_path = [curr_state]
             while(solution_path[-1].prev_state):
